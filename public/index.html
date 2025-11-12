@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CPU Scheduling Simulator - SJF</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>CPU Scheduling Simulator</h1>
+      <p>Shortest Job First (Non-Preemptive)</p>
+    </header>
+
+    <main>
+      <section class="inputs-panel">
+        <h2>Process Input</h2>
+        <form id="process-form">
+          <div class="input-grid">
+            <label>
+              Arrival Time
+              <input type="number" id="arrival-time" min="0" step="1" required />
+            </label>
+            <label>
+              Burst Time
+              <input type="number" id="burst-time" min="1" step="1" required />
+            </label>
+          </div>
+          <button type="submit" class="primary">
+            Add Process
+          </button>
+          <button type="button" id="reset-btn" class="secondary">
+            Reset
+          </button>
+        </form>
+
+        <table id="process-table">
+          <thead>
+            <tr>
+              <th>PID</th>
+              <th>Arrival Time</th>
+              <th>Burst Time</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section class="results-panel">
+        <h2>Simulation Results</h2>
+        <div class="actions">
+          <button id="simulate-btn" class="primary">Run SJF</button>
+        </div>
+
+        <div id="metrics" class="card hidden">
+          <h3>Metrics</h3>
+          <div class="metrics-grid">
+            <div>
+              <span>Average Waiting Time</span>
+              <strong id="avg-waiting-time">0</strong>
+            </div>
+            <div>
+              <span>Average Turnaround Time</span>
+              <strong id="avg-turnaround-time">0</strong>
+            </div>
+            <div>
+              <span>CPU Utilization</span>
+              <strong id="cpu-utilization">0%</strong>
+            </div>
+          </div>
+        </div>
+
+        <div id="details" class="card hidden">
+          <h3>Per Process Details</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>PID</th>
+                <th>Start Time</th>
+                <th>Completion Time</th>
+                <th>Waiting Time</th>
+                <th>Turnaround Time</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div id="gantt-chart" class="card hidden">
+          <h3>Gantt Chart</h3>
+          <div class="chart-container">
+            <div class="chart-timeline" id="chart-timeline"></div>
+            <div class="chart-labels" id="chart-labels"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Built with Node.js, Express, and vanilla JS</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+

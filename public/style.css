@@ -1,0 +1,277 @@
+:root {
+  --bg: #fcf5ee;
+  --fg: #3f0a21;
+  --fg-subtle: rgba(63, 10, 33, 0.7);
+  --card-bg: #fff7f2;
+  --accent: #850e35;
+  --accent-soft: rgba(133, 14, 53, 0.12);
+  --border: #ee6983;
+  --muted: #ffc4c4;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header,
+footer {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: var(--card-bg);
+  box-shadow: 0 1px 4px rgba(133, 14, 53, 0.1);
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+header p {
+  color: var(--accent);
+  margin-top: 0.35rem;
+  font-weight: 500;
+}
+
+main {
+  flex: 1;
+  display: grid;
+  gap: 1.5rem;
+  padding: 2rem clamp(1rem, 5vw, 3rem);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.inputs-panel,
+.results-panel {
+  background: var(--card-bg);
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+input[type="number"] {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--bg);
+  color: var(--fg);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+input[type="number"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button.primary {
+  background: var(--accent);
+  color: #fcf5ee;
+  box-shadow: 0 8px 16px rgba(133, 14, 53, 0.2);
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--accent);
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(133, 14, 53, 0.18);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+table th,
+table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+table thead {
+  background: #ffc4c4;
+  color: var(--fg);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+table tbody tr:nth-child(even) {
+  background: rgba(255, 196, 196, 0.35);
+}
+
+table tbody tr:hover {
+  background: rgba(238, 105, 131, 0.18);
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: #fff3ec;
+}
+
+.hidden {
+  display: none;
+}
+
+.metrics-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.metrics-grid span {
+  color: var(--fg-subtle);
+  font-size: 0.9rem;
+}
+
+.metrics-grid strong {
+  font-size: 1.5rem;
+}
+
+.chart-container {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.chart-timeline {
+  display: flex;
+  align-items: stretch;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  font-size: 0.875rem;
+  padding: 0 0.5rem;
+  color: var(--accent);
+}
+
+.chart-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--segment-text, #fcf5ee);
+  font-weight: 600;
+  min-height: 60px;
+  position: relative;
+  flex-grow: 1;
+  --tick-color: rgba(252, 245, 238, 0.85);
+}
+
+.chart-segment span {
+  z-index: 1;
+}
+
+.chart-segment::after {
+  content: attr(data-start);
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--tick-color);
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+}
+
+.chart-segment:last-child::before {
+  content: attr(data-end);
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--tick-color);
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--fg-subtle);
+}
+
+footer p {
+  font-size: 0.9rem;
+  color: var(--fg-subtle);
+}
+
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 1.6rem;
+  }
+
+  .chart-segment {
+    font-size: 0.85rem;
+  }
+}
+
