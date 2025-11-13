@@ -20,6 +20,10 @@ let pidCounter = 1;
 const colorPalette = ['#850e35', '#ee6983', '#ffc4c4', '#fcf5ee', 'rgb(133, 14, 53)', 'rgb(238, 105, 131)', 'rgb(255, 196, 196)', 'rgb(252, 245, 238)'];
 
 function colorToRgb(color) {
+  if (!color || typeof color !== 'string') {
+    return { r: 255, g: 255, b: 255 };
+  }
+
   if (color.startsWith('#')) {
     const hex = color.slice(1);
     const normalized = hex.length === 3 ? hex.split('').map((ch) => ch + ch).join('') : hex;
@@ -83,14 +87,69 @@ resetBtn.addEventListener('click', () => {
   hideResults();
 });
 
-simulateBtn.addEventListener('click', () => {
+simulateBtn.addEventListener('click', async () => {
   if (processes.length === 0) {
     alert('Add at least one process before simulation.');
     return;
   }
 
-  const result = runSJF(processes);
-  renderResults(result);
+  // Disable button during simulation
+  simulateBtn.disabled = true;
+  simulateBtn.textContent = 'Simulating...';
+
+  try {
+    // Format processes for API
+    const processData = processes.map(p => ({
+      pid: p.pid,
+      arrival: p.arrivalTime,
+      burst: p.burstTime
+    }));
+
+    const response = await fetch('/api/simulate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ processes: processData })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Simulation failed');
+    }
+
+    const result = await response.json();
+    
+    // Transform C program output to match frontend format
+    const transformedResult = {
+      timeline: (result.timeline || []).map(slot => ({
+        pid: slot.pid || 'UNKNOWN',
+        start: slot.start || 0,
+        end: slot.end || 0,
+        color: pickColor(slot.pid)
+      })),
+      details: (result.details || []).map(d => ({
+        pid: d.pid || 'UNKNOWN',
+        startTime: d.startTime || 0,
+        completionTime: d.completionTime || 0,
+        waitingTime: d.waitingTime || 0,
+        turnaroundTime: d.turnaroundTime || 0,
+        arrivalTime: d.arrival || 0,
+        burstTime: d.burst || 0
+      })),
+      avgWaitingTime: (result.avgWaitingTime || 0).toFixed(2),
+      avgTurnaroundTime: (result.avgTurnaroundTime || 0).toFixed(2),
+      cpuUtilization: (result.cpuUtilization || 0).toFixed(2)
+    };
+
+    renderResults(transformedResult);
+  } catch (error) {
+    console.error('Simulation error:', error);
+    alert('Simulation failed: ' + error.message);
+  } finally {
+    simulateBtn.disabled = false;
+    simulateBtn.textContent = 'Simulate';
+  }
 });
 
 function renderProcessTable() {
@@ -206,8 +265,18 @@ function runSJF(procList) {
 }
 
 function pickColor(pid) {
+  if (!pid || typeof pid !== 'string') {
+    return colorPalette[0]; // Default to first color
+  }
+  
+  // Handle "IDLE" process with a special color
+  if (pid === 'IDLE') {
+    return '#e7b8b8'; // Light gray for idle time
+  }
+  
   const index = Number(pid.replace(/\D+/g, '')) || 0;
-  return colorPalette[(index - 1) % colorPalette.length];
+  const paletteIndex = index > 0 ? (index - 1) % colorPalette.length : 0;
+  return colorPalette[paletteIndex] || colorPalette[0];
 }
 
 function renderResults({ timeline, details, avgWaitingTime, avgTurnaroundTime, cpuUtilization }) {
